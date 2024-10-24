@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom'
 import Button from '../../../components/flowbite/button/Button'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { getDatabase, push, ref, set } from "firebase/database";
+import { getAuth, createUserWithEmailAndPassword,sendEmailVerification,updateProfile,} from "firebase/auth";
+
 
 const SignUp = () => {
-  const [passShow,setPassShow] = useState(true)
+  const db = getDatabase();
+  const auth = getAuth();
   const emailregx =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   const formik = useFormik({
     initialValues: {
@@ -20,7 +24,7 @@ const SignUp = () => {
         .required('Kindly enter your full name'),
       password: Yup.string()
         .max(10, 'Must be 10 characters or less')
-        .min(4, 'Minimum 5 characters required')
+        .min(3, 'Minimum 4 characters required')
         .required('Kindly enter your password'),
       email: Yup.string()
       .email('Invalid email address')
@@ -29,7 +33,43 @@ const SignUp = () => {
     }),
     onSubmit: values => {
       // console.log(JSON.stringify(values, null, 2));
-      console.log(values);
+      // console.log(values);
+      createUserWithEmailAndPassword(auth, values.email, values.password, values.fullName)
+      .then((userCredential) => {
+        // Signed up 
+        const user = userCredential.user;
+        sendEmailVerification(auth.currentUser)
+        .then(() => {
+          updateProfile(auth.currentUser, {
+            displayName: values.fullName,
+          }).then(() => {
+              console.log(user);
+              set(ref(db, 'floks/' + user.uid), {
+                displayName: user.displayName,
+                email: user.email,
+                // profile_picture : user.photoURL,
+                
+              }).then(()=>{
+                console.log('real time data done');
+                
+              })
+              
+            }).catch((error) => {
+              // An error occurred
+              // ...
+              console.log(error);
+              
+            });
+            
+        });
+        // ...
+      })
+      .catch((error) => {
+        console.log(error);
+        
+        
+        // ..
+      });
       
       
     },

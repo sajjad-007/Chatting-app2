@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{
+    .h2_heading{
+        @apply   text-2xl font-normal bg-orange-400 p-4 text-white rounded-md capitalize
+    }
+};
+@layer components{
+    .chartListMain{
+        @apply   w-[330px] h-[395px] rounded-3xl p-5  shadow-2xl bg-white 
+    }
+};
+@layer components{
+    .chartListHead{
+        @apply  text-xl font-semibold leading-normal capitalize text-black
+    }
+};
+@layer components{
+    .cartItembox{
+        @apply  overflow-y-scroll
+       
+    }
+};
+
+*::-webkit-scrollbar {
+    background-color: transparent;
+    width: 0px;
+}
+
