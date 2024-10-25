@@ -2,37 +2,76 @@ import React from 'react'
 import 'flowbite';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword,sendPasswordResetEmail   } from "firebase/auth";
 import Button from '../../../components/flowbite/button/Button';
+import { SuccessTost,ErrorTost,InfoTost } from '../../../components/utilities/toastify/tostify';
+import { ToastContainer } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import ResetPass from '../../../components/flowbite/modal/resetPass/ResetPass';
+import SignInGoogle from '../../../components/flowbite/signinGoogle/SignInGoogle';
+
+
 
 
 
 
 const Login = () => {
   const auth = getAuth();
+  const navigate = useNavigate();
+  // const user = auth.currentUser;
 
   const formik = useFormik({
     initialValues: {
       email: '',
       password:'',
     },
-    onSubmit: values => {
+    onSubmit: (values,actions) => {
       signInWithEmailAndPassword(auth, values.email, values.password)
         .then((userCredential) => {
           // Signed in 
           const user = userCredential.user;
-          console.log(user);
+          
+          if (user.emailVerified) {
+            SuccessTost("Login successfull")
+            setTimeout(() => {
+              navigate("/home");
+            }, 2000);
+            actions.resetForm()
+          }else{
+            InfoTost("Please first verify your email")
+          }
+          
         })
         .catch((error) => {
-          console.log(error);
-          
+          ErrorTost("Invalid Email or Password")
         });
     },
   });
+  let handleForgetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+      // Password reset email sent!
+      console.log(auth);
+      console.log(email);
+      
+      // ..
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      
+      // ..
+    });   
+  }
   
   return (
-    <div className="p-[40px] flex justify-center items-center flex-col gap-5 bg-yellow-400 h-[400px] w-[400px] mx-auto mt-[100px]">
+    <div className="p-[40px] flex justify-center items-center flex-col gap-5 bg-[#b6d7759b] h-[500px] w-[400px] mx-auto mt-[100px]">
+      <ToastContainer /> 
       <h2 className='h2_heading'>Login Page</h2>
+      {/* signIn with google firebase= signin-method  */}
+      <SignInGoogle/>
      <form onSubmit={formik.handleSubmit}>
       <div className='flex flex-col gap-5 items-center justify-center'>
         <div>
@@ -64,6 +103,8 @@ const Login = () => {
       </div>
      </form>
      <p>Don't have an account? <Link className='text-[#bf6297]' to='/signup'>Sign up</Link></p>
+     {/* Password reset  firebase= reset password using email  */}
+     <ResetPass/>
     </div>
   )
   

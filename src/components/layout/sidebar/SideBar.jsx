@@ -1,9 +1,26 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify';
+import { SuccessTost,ErrorTost } from '../../../components/utilities/toastify/tostify';
+import { getAuth, signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {
+  const auth = getAuth();
+  const navigate = useNavigate();
+  let handleLogOut = () => {
+    signOut(auth).then(() => {
+      SuccessTost("Sign-out successful","top-right",2000)
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }).catch((error) => {
+      ErrorTost("An error happened can't Sign-out")
+    });
+  }
   return (
     <div className='p-[30px] w-full h-full text-white '>
+      <ToastContainer /> 
       <div className='h-full w-full rounded-3xl flex flex-col items-center
       justify-center gap-[75px] bg-[#5F35F5] py-[24px] px-0'>
         <div className="sidebar_avatar flex items-center flex-col">
@@ -30,7 +47,7 @@ const SideBar = () => {
           
         </div>
         <div className="sidebar_logout">
-          <button className='p-3 inline-block rounded-lg capitalize cursor-pointer text-center border-2 border-solid border-white font-semibold'>logout</button>
+          <button className='p-3 inline-block rounded-lg capitalize cursor-pointer text-center border-2 border-solid border-white font-semibold' onClick={handleLogOut}>logout</button>
         </div>
       </div>
     </div>
