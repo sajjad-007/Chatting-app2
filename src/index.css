@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer components{
     .h2_heading{
         @apply   text-2xl font-normal bg-orange-400 p-4 text-white rounded-md capitalize

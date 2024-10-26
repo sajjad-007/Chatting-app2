@@ -4,15 +4,26 @@ import { ToastContainer } from 'react-toastify';
 import { SuccessTost,ErrorTost } from '../../../components/utilities/toastify/tostify';
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux'
+import { authLogInUser } from '../../../redux/slice/authSlice';
+import LogInUserName from '../../userName/LogInUserName';
+
 
 const SideBar = () => {
   const auth = getAuth();
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const UserData = useSelector((state) => state.logInUser.value)
+  // console.log(UserData.displayName);
+  
+
   let handleLogOut = () => {
     signOut(auth).then(() => {
-      SuccessTost("Sign-out successful","top-right",2000)
+      SuccessTost("Sign-out successful")
+      localStorage.removeItem("LoggedInUser")
       setTimeout(() => {
         navigate("/");
+        dispatch(authLogInUser(null))
       }, 2000);
     }).catch((error) => {
       ErrorTost("An error happened can't Sign-out")
@@ -30,6 +41,12 @@ const SideBar = () => {
               </span>
           </div>
           <h2 className='mt-5 text-center text-white text-lg capitalize'>Name</h2>
+          {/* <LogInUserName text={
+            UserData
+              ? UserData.displayName
+              :
+                <p>data none</p>  }
+          /> */}
         </div>
         <div className="sidebar_items flex flex-col gap-3">
             <NavLink to='/home'>

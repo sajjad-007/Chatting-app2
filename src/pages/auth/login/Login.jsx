@@ -9,8 +9,8 @@ import { ToastContainer } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import ResetPass from '../../../components/flowbite/modal/resetPass/ResetPass';
 import SignInGoogle from '../../../components/flowbite/signinGoogle/SignInGoogle';
-
-
+import { useSelector, useDispatch } from 'react-redux'
+import { authLogInUser } from '../../../redux/slice/authSlice';
 
 
 
@@ -18,8 +18,9 @@ import SignInGoogle from '../../../components/flowbite/signinGoogle/SignInGoogle
 const Login = () => {
   const auth = getAuth();
   const navigate = useNavigate();
-  // const user = auth.currentUser;
-
+  const dispatch = useDispatch()
+  const UserData = useSelector((state) => state.logInUser.value)
+  
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -33,17 +34,23 @@ const Login = () => {
           
           if (user.emailVerified) {
             SuccessTost("Login successfull")
+            // console.log("Login successfull");
+            localStorage.setItem("LoggedInUser", JSON.stringify(user));
+            dispatch(authLogInUser(user))
             setTimeout(() => {
               navigate("/home");
             }, 2000);
             actions.resetForm()
           }else{
-            InfoTost("Please first verify your email")
+            // InfoTost("Please first verify your email")
+            console.log("Please first verify your email");
           }
           
         })
         .catch((error) => {
-          ErrorTost("Invalid Email or Password")
+          // ErrorTost("Invalid Email or Password")
+          console.log("Invalid Email or Password");
+          
         });
     },
   });

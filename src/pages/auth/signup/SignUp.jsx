@@ -59,8 +59,7 @@ const SignUp = () => {
               set(ref(db, 'floks/' + user.uid), {
                 displayName: user.displayName,
                 email: user.email,
-                // profile_picture : user.photoURL,
-                
+                photoUrl: user.photoURL,
               }).then(()=>{
                 SuccessTost('sign up successfull',);
                 actions.resetForm();
@@ -84,6 +83,7 @@ const SignUp = () => {
         ErrorTost('already in use this account',)
         console.log(error);
         setLoading(false)
+        actions.resetForm()
         // ..
       });
       
@@ -95,6 +95,7 @@ const SignUp = () => {
   
   return (
     <>
+      <ToastContainer /> 
       {loading 
         ?
       <div className='h-screen w-full bg-yellow-200 z-50 absolute flex items-center justify-center'>
@@ -106,7 +107,7 @@ const SignUp = () => {
       </div>
         :
         <div className="p-[40px] flex justify-center items-center flex-col gap-5 relative z-10">
-        <ToastContainer /> 
+        
         <h2 className='text-xl text-green-400'>Sign up Page</h2>
         <form onSubmit={formik.handleSubmit}>
           <div className='flex flex-col gap-5'>

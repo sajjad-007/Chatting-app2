@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
+import { ToastContainer } from 'react-toastify';
+import { SuccessTost,ErrorTost } from '../../../utilities/toastify/tostify';
+
 const ResetPass = () => {
     const auth = getAuth();
 
@@ -15,11 +18,11 @@ const ResetPass = () => {
             sendPasswordResetEmail(auth, values.email)
             .then(() => {
                 // 
-                console.log("Password reset email sent!");
+                SuccessTost("Password reset email sent!");
                 // ..
             })
             .catch((error) => {
-                console.log(error);
+                ErrorTost(error);
                 
                 // ..
             });
@@ -28,7 +31,7 @@ const ResetPass = () => {
       });
   return (
     <div>
-
+      <ToastContainer /> 
 
         {/* <!-- Modal toggle --> */}
         <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 capitalize" type="button">
