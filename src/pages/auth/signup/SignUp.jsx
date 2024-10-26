@@ -60,6 +60,7 @@ const SignUp = () => {
                 displayName: user.displayName,
                 email: user.email,
                 photoUrl: user.photoURL,
+                userId: user.uid,
               }).then(()=>{
                 SuccessTost('sign up successfull',);
                 actions.resetForm();

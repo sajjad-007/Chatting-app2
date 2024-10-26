@@ -5,11 +5,15 @@ import { ToastContainer } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { authLogInUser } from '../../../redux/slice/authSlice';
+import { getDatabase, push, ref, set } from "firebase/database";
+import { useFormik } from 'formik';
+
 
 
 const SignInGoogle = () => {
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
+    const db = getDatabase();
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const UserData = useSelector((state) => state.logInUser.value)
@@ -20,21 +24,31 @@ const SignInGoogle = () => {
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             const user = result.user;
-            SuccessTost("SignIn Successfull")
             // User data store in local stor
+            set(ref(db,"floks/" + user.uid),{
+              displayName: user.displayName,
+              email: user.email,
+              photoUrl: user.photoURL,
+              userId: user.uid,
+
+            }).then(()=>{
+              console.log('created successfully');
+            })
+            SuccessTost("SignIn Successfull")
             localStorage.setItem("LoggedInUser", JSON.stringify(user))
             dispatch(authLogInUser(user))
             setTimeout(() => {
                 navigate("/home");
             }, 2000);
+            
         }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
+            // // Handle Errors here.
+            // const errorCode = error.code;
+            // const errorMessage = error.message;
+            // // The email of the user's account used.
+            // const email = error.customData.email;
+            // // The AuthCredential type that was used.
+            // const credential = GoogleAuthProvider.credentialFromError(error);
             console.log(error);
             ErrorTost("SignIn failed")
             // ...

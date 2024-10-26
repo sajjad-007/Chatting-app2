@@ -21,6 +21,7 @@ const Login = () => {
   const dispatch = useDispatch()
   const UserData = useSelector((state) => state.logInUser.value)
   
+  
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -42,14 +43,14 @@ const Login = () => {
             }, 2000);
             actions.resetForm()
           }else{
-            // InfoTost("Please first verify your email")
-            console.log("Please first verify your email");
+            InfoTost("Please first verify your email")
+            // console.log("Please first verify your email");
           }
           
         })
         .catch((error) => {
-          // ErrorTost("Invalid Email or Password")
-          console.log("Invalid Email or Password");
+          ErrorTost("Invalid Email or Password")
+          // console.log("Invalid Email or Password");
           
         });
     },

@@ -40,13 +40,13 @@ const SideBar = () => {
               JM
               </span>
           </div>
-          <h2 className='mt-5 text-center text-white text-lg capitalize'>Name</h2>
-          {/* <LogInUserName text={
+          {/* <h2 className='mt-5 text-center text-white text-lg capitalize'>Name</h2> */}
+          <LogInUserName text={
             UserData
               ? UserData.displayName
               :
                 <p>data none</p>  }
-          /> */}
+          />
         </div>
         <div className="sidebar_items flex flex-col gap-3">
             <NavLink to='/home'>
