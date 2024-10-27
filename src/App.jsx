@@ -20,14 +20,14 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-        {/* <Route element={<PrivetRoute/>}> */}
+        <Route element={<PrivetRoute/>}>
           <Route element={<RootLayout/>}>
             <Route path="/home" element={<Home/>}/>
             <Route path="/message" element={<Message/>}/>
             <Route path="/notification" element={<Notification/>}/>
             <Route path="/setting" element={<Setting/>}/>
           </Route>
-        {/* </Route> */}
+        </Route>
         <Route path="*" element={<ErrorPage/>}/>
         <Route path="/" element={<Login/>}/>
         <Route path="/signup" element={<SignUp/>}/>

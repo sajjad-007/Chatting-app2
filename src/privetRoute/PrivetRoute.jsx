@@ -6,7 +6,8 @@ import { Outlet } from 'react-router-dom'
 
 const PrivetRoute = () => {
     const UserData = useSelector((state) => state.logInUser.value)
-  return UserData ? <Login/> : <Outlet/> 
+    //log in page e UserData er value null thake userData i kono value thake na
+  return UserData ? <Outlet/>  :  <Login/>
 }
 
 export default PrivetRoute
