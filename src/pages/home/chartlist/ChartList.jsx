@@ -7,16 +7,16 @@ import UserName from '../../../components/chartUserName/UserName'
 import { useSelector, useDispatch } from 'react-redux'
 import { getDatabase, ref, onValue, set, push } from "firebase/database";
 import { SuccessTost } from '../../../components/utilities/toastify/tostify'
+import Alert from '../../../components/flowbite/alert/Alert'
 
 
 const ChartList = () => {
     const UserData = useSelector((state) => state.logInUser.value)
-    // console.log(UserData);
-    
-    
     const db = getDatabase();
     const[userList,setUserList] = useState([])
     const[friendReqList,setfriendReqList] = useState([])
+    const[friendsList,setFriendsList] = useState([])
+   
     // Read operation for UserList
     useEffect(()=>{
         const userListRef = ref(db, 'floks'  );
@@ -27,12 +27,11 @@ const ChartList = () => {
                 if (UserData.uid != item.key) {
                     array.push({...item.val(), id: item.key})
                 } 
-                // console.log(item.key);
             })
-            // console.log(array);
             setUserList(array);
         });
     },[])
+   
 
     // Read operation for FriendRequestList
     useEffect(()=>{
@@ -40,11 +39,10 @@ const ChartList = () => {
         onValue(userListRef, (snapshot) => {
             let array = []
             snapshot.forEach((item)=>{
-                if (UserData.uid == item.val().whoSendFriendReqId) {
-                    array.push(UserData.uid + item.uid)
+                if (UserData.uid == item.val().whoSendFriendReqId || UserData.uid == item.val().whoReciveFriendReqId) {
+                    array.push(item.val().whoSendFriendReqId + item.val().whoReciveFriendReqId)
                 } 
             })
-            // console.log(array);
             setfriendReqList(array);
         });
     },[])
@@ -63,6 +61,19 @@ const ChartList = () => {
             SuccessTost('friend request done');
           })
     }
+    useEffect(()=>{
+        const userListRef = ref(db, 'friends'  );
+        onValue(userListRef, (snapshot) => {
+            let array = []
+            snapshot.forEach((item)=>{
+                if (UserData.uid == item.val().senderId || UserData.uid == item.val().receiverId) {
+                    array.push(item.val().senderId + item.val().receiverId)
+                } 
+            })
+            setFriendsList(array);
+            
+        });
+    },[])
 
   return (
     <div className='chartListMain overflow-hidden'>
@@ -70,7 +81,8 @@ const ChartList = () => {
             <ChartHead text='user list'/>
         </div>
         <div className='chartItembox h-[350px] mt-[34px] mb-2 pb-2 overflow-y-scroll'>
-            {userList.map((item,index)=>(
+            {userList.length > 0 ? 
+            userList.map((item,index)=>(
                 <div key={index} className='cartItemChild w-full h-[80px] mb-6 flex items-center justify-between border-b-2 border-b-slate-400'>
                     <div className="chartChildFirst flex gap-2">
                         <div className="avatar">
@@ -86,17 +98,24 @@ const ChartList = () => {
                         </div>
                     </div>
                     <div className="chartChildFirst">
-                        { friendReqList.includes(item.uid + UserData.uid) || friendReqList.includes(UserData.uid + item.uid)
+                            {/* // includes er kaj holo ekta array er modde ekti nirdisto jinis khoja  eti true or false value return korbe*/}
+                            {friendReqList.includes(UserData.uid + item.id) || friendReqList.includes(item.id+ UserData.uid )
                             ?
-
                             <Button text='Cancle'/>
                             :
-                            <Button onClick={()=>handleAddFriendBtn(item)} text='Add'/>
+                                friendsList.includes(UserData.uid + item.id) || friendsList.includes(item.id+ UserData.uid )
+                                ?
+                                    <Button text='friends'/>
 
-                        }
+                                :
+                                    <Button onClick={()=>handleAddFriendBtn(item)} text='Add'/>
+                            }
                     </div>
                 </div>
-            ))}
+            ))
+            :
+            <Alert text="dont't have any user yet"/>
+            }
         </div>
     </div>
   )

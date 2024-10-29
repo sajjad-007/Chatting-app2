@@ -10,7 +10,7 @@
 };
 @layer components{
     .chartListMain{
-        @apply   w-[380px] h-[395px] rounded-3xl p-5  shadow-2xl bg-white 
+        @apply   w-[360px] h-[395px] rounded-3xl p-5  shadow-2xl bg-white 
     }
 };
 @layer components{

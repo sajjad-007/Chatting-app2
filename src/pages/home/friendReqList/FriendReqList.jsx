@@ -5,19 +5,24 @@ import UserName from '../../../components/chartUserName/UserName'
 import Avatar from '../../../components/flowbite/avatar/Avatar'
 import ChartHead from '../../../components/chartHead/ChartHead'
 import { useSelector, useDispatch } from 'react-redux'
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, remove, set, push } from "firebase/database";
+import { getAuth, deleteUser } from "firebase/auth";
+import { SuccessTost } from '../../../components/utilities/toastify/tostify'
+import Alert from '../../../components/flowbite/alert/Alert'
+
 
 const FriendReqList = () => {
     const UserData = useSelector((state) => state.logInUser.value)
-    
     const db = getDatabase();
     const[friendReqList,setFriendReqList] = useState([])
+    const auth = getAuth();
+    const user = auth.currentUser;
     
     useEffect(()=>{
         const userListRef = ref(db, "friendRequest"  );
         onValue(userListRef, (snapshot) => {
             let array = []
-            snapshot.forEach((item)=>{
+            snapshot.forEach((item) => {
                 if ( UserData.uid == item.val().whoReciveFriendReqId ) {
                     array.push({...item.val(), id: item.key})
                 } 
@@ -25,6 +30,23 @@ const FriendReqList = () => {
             setFriendReqList(array);
         });
     },[])
+    let handleDeleteFriendReq = (deleteInfo) => {
+        remove(ref(db, 'friendRequest/' + deleteInfo.id))
+    }
+    let handleConfirmReq = (confirmInfo) => {
+        set(push(ref(db, 'friends')),{
+            senderId: confirmInfo.whoSendFriendReqId,
+            senderName: confirmInfo.whoSendFriendReqName,
+            senderEmail: confirmInfo.whoSendFriendReqEmail,
+            receiverId: UserData.uid,
+            receiverName: UserData.displayName,
+            receiverEmail: UserData.email,
+          }).then(()=> {
+            remove(ref(db, 'friendRequest/' + confirmInfo.id))
+          }).then(()=>{
+            SuccessTost("friend request confirm")
+          })
+    }
 
   return (
     <div className='chartListMain overflow-hidden'>
@@ -32,7 +54,9 @@ const FriendReqList = () => {
             <ChartHead text='Friend Request List'/>
         </div>
         <div className='chartItembox h-[350px] mt-[34px] mb-2 pb-2 overflow-y-scroll'>
-            {friendReqList.map((item,index)=>(
+            {friendReqList.length > 0 
+                ?
+            friendReqList.map((item,index)=>(
                 <div key={index} className='cartItemChild w-full h-[80px] mb-6 flex items-center justify-between border-b-2 border-b-slate-400'>
                     <div className="chartChildFirst flex gap-2">
                         <div className="avatar">
@@ -48,11 +72,14 @@ const FriendReqList = () => {
                         </div>
                     </div>
                     <div className="chartChildFirst">
-                        <Button text='Accept'/>
-                        <Button text='Delete'/>
+                        <Button onClick={()=>handleConfirmReq(item)} text='Accept'/>
+                        <Button text='Delete' onClick={()=>handleDeleteFriendReq(item)}/>
                     </div>
                 </div>
-            ))}
+            ))
+                :
+                <Alert text="don't have any friend request yet"/>
+            }
         </div>
     </div>
   )

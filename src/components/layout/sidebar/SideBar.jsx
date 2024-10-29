@@ -48,9 +48,9 @@ const SideBar = () => {
                 <p>data none</p>  }
           />
         </div>
-        <div className="sidebar_items flex flex-col gap-3">
+        <div className="sidebar_items flex flex-col gap-3 ">
             <NavLink to='/home'>
-              <h2 className='p-3  rounded-lg capitalize cursor-pointer text-center border-2 border-solid border-white font-semibold'>home</h2>
+              <h2 className='p-3 rounded-lg capitalize cursor-pointer text-center border-2 border-solid border-white font-semibold'>home</h2>
             </NavLink>
             <NavLink to='/message'>
               <h2 className='p-3   rounded-lg capitalize cursor-pointer text-center border-2 border-solid border-white font-semibold'>message</h2>
@@ -59,7 +59,7 @@ const SideBar = () => {
               <h2 className='p-3  rounded-lg capitalize cursor-pointer text-center border-2 border-solid border-white font-semibold'>notification</h2>
             </NavLink>
             <NavLink to='/setting'>
-              <h2 className='p-3   rounded-lg capitalize cursor-pointer text-center border-2 border-solid border-white font-semibold'>notification</h2>
+              <h2 className='p-3   rounded-lg capitalize cursor-pointer text-center border-2 border-solid border-white font-semibold'>settings</h2>
             </NavLink>
           
         </div>
