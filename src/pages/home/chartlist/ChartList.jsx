@@ -89,7 +89,7 @@ const ChartList = () => {
                             <Avatar/>
                         </div>
                         <div className='flex flex-col'>
-                            <div className="userName">
+                            <div className="userName w-2">
                                 <UserName text={item.displayName}/>
                             </div>
                             <div className="timeDate">

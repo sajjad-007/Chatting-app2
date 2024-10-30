@@ -44,7 +44,7 @@ const FriendsList = () => {
                             <Avatar/>
                         </div>
                         <div className='flex flex-col'>
-                            <div className="userName">
+                            <div className="userName w-2">
                                 <UserName text={UserData.uid == item.receiverId 
                                     ?
                                     item.senderName
